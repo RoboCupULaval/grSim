@@ -317,6 +317,13 @@ void MainWindow::readPendingDatagrams()
 			memcpy(&foo.bin, datagram.mid(4, 8), 8);
 			glwidget->putBall(foo.pos.x,foo.pos.y);
 		}
+		else if (type.value == 1){
+			union binInt id;
+			memcpy(&id.bin, datagram.mid(4, 4), 4);
+			union binVec2 foo;
+			memcpy(&foo.bin, datagram.mid(8, 8), 8);
+			glwidget->ssl->robots[id.value]->setXY(foo.pos.x, foo.pos.y); 
+		}
 
 
 	}
