@@ -295,7 +295,12 @@ void MainWindow::readPendingDatagrams()
 						&sender, &senderPort);
 		
 
-		union binfloat 
+		union binInt{
+			char bin[4];
+			int value;
+		};
+
+		union binVec2 
 		{
 		    	char bin[8];
 			struct pos{
@@ -304,10 +309,16 @@ void MainWindow::readPendingDatagrams()
 			} pos;
 		};
 
-		union binfloat foo;
-		memcpy(&foo.bin, datagram.data(), 8);
+		union binInt type;
+		memcpy(&type.bin, datagram.left(4), 4);
 
-		glwidget->putBall(foo.pos.x,foo.pos.y);
+		if (type.value == 0){
+			union binVec2 foo;
+			memcpy(&foo.bin, datagram.mid(4, 8), 8);
+			glwidget->putBall(foo.pos.x,foo.pos.y);
+		}
+
+
 	}
 }
 
