@@ -34,6 +34,7 @@ Copyright (C) 2011, Parsian Robotic Center (eew.aut.ac.ir/~parsian/grsim)
 
 #include "mainwindow.h"
 #include "logger.h"
+#include <iostream>
 
 int MainWindow::getInterval()
 {
@@ -85,7 +86,11 @@ MainWindow::MainWindow(QWidget *parent)
     glwidget->ssl->blueStatusSocket = blueStatusSocket;
     glwidget->ssl->yellowStatusSocket = yellowStatusSocket;
 
+    remoteControlSocket = new QUdpSocket(this);
+    remoteControlSocket->bind(QHostAddress::LocalHost, 7755);
 
+    QObject::connect(remoteControlSocket, SIGNAL(readyRead()),
+            		this, SLOT(readPendingDatagrams()));
 
     robotwidget = new RobotWidget(this);
     /* Status Bar */
@@ -169,6 +174,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     timer = new QTimer(this);
     timer->setInterval(getInterval());
+
+
 
 
     QObject::connect(timer, SIGNAL(timeout()), this, SLOT(update()));
@@ -274,6 +281,34 @@ void MainWindow::changeGravity()
 void MainWindow::changeTimer()
 {
     timer->setInterval(getInterval());
+}
+
+void MainWindow::readPendingDatagrams()
+{
+	while (remoteControlSocket->hasPendingDatagrams()) {
+		QByteArray datagram;
+		datagram.resize(remoteControlSocket->pendingDatagramSize());
+		QHostAddress sender;
+		quint16 senderPort;
+
+		remoteControlSocket->readDatagram(datagram.data(), datagram.size(),
+						&sender, &senderPort);
+		
+
+		union binfloat 
+		{
+		    	char bin[8];
+			struct pos{
+				float x;
+				float y;
+			} pos;
+		};
+
+		union binfloat foo;
+		memcpy(&foo.bin, datagram.data(), 8);
+
+		glwidget->putBall(foo.pos.x,foo.pos.y);
+	}
 }
 
 QString dRealToStr(dReal a)

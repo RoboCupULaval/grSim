@@ -63,6 +63,8 @@ public slots:
     void reconnectBlueStatusSocket();
     void reconnectVisionSocket();
     void recvActions();
+
+    void readPendingDatagrams();
 private:
     int getInterval();    
     QTimer *timer;
@@ -86,6 +88,7 @@ private:
     RoboCupSSLServer *visionServer;
     QUdpSocket *commandSocket;
     QUdpSocket *blueStatusSocket,*yellowStatusSocket;
+    QUdpSocket *remoteControlSocket;
 };
 
 #endif // MAINWINDOW_H
