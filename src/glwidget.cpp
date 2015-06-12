@@ -29,7 +29,7 @@ GLWidget::GLWidget(QWidget *parent,ConfigWidget* _cfg)
     : QGLWidget(parent)
 {
     frames = 0;
-    state = 0;
+    move_state = NONE;
     first_time = true;
     cfg = _cfg;
     forms[0] = new RobotsFomation(-1);  //outside
@@ -118,7 +118,7 @@ void GLWidget::moveRobot()
 {
     ssl->show3DCursor = true;
     ssl->cursor_radius = cfg->robotSettings.RobotRadius;
-    state = 1;
+    move_state = MOVE_ROBOT;
     moving_robot_id = clicked_robot;
 }
 
@@ -168,7 +168,7 @@ void GLWidget::moveCurrentRobot()
 {
     ssl->show3DCursor = true;
     ssl->cursor_radius = cfg->robotSettings.RobotRadius;
-    state = 1;
+    move_state = MOVE_ROBOT;
     moving_robot_id = robotIndex(Current_robot,Current_team);
 }
 
@@ -176,7 +176,7 @@ void GLWidget::moveBall()
 {
     ssl->show3DCursor = true;
     ssl->cursor_radius = cfg->BallRadius();
-    state = 2;
+    move_state = MOVE_BALL;
 }
 
 void GLWidget::mousePressEvent(QMouseEvent *event)
@@ -185,45 +185,44 @@ void GLWidget::mousePressEvent(QMouseEvent *event)
     lastPos = event->pos();
     if (event->buttons() & Qt::LeftButton)
     {
-        if (state==1)
-        {
-            if (moving_robot_id!=-1)
-            {
-                ssl->robots[moving_robot_id]->setXY(ssl->cursor_x,ssl->cursor_y);
-                state = 0;
-                ssl->show3DCursor = false;
-            }
-        }
-        else if (state==2)
-        {
-            ssl->ball->setBodyPosition(ssl->cursor_x,ssl->cursor_y,cfg->BallRadius()*1.1*20.0);
-            dBodySetAngularVel(ssl->ball->body,0,0,0);
-            dBodySetLinearVel(ssl->ball->body,0,0,0);
-            ssl->show3DCursor = false;
-            state = 0;
-        }
-        else {
-            if (ssl->selected>=0){
-                clicked_robot = ssl->selected;
-                selectRobot();
-            }
-            if (kickingball)
-            {
-                dReal x,y,z;
-                ssl->ball->getBodyPosition(x,y,z);                
-                x = ssl->cursor_x - x;
-                y = ssl->cursor_y - y;
-                dReal lxy = hypot(x,y);
-                x /= lxy;
-                y /= lxy;
-                x *= kickpower;
-                y *= kickpower;
-                dBodySetLinearVel(ssl->ball->body,x,y,0);
-                dBodySetAngularVel(ssl->ball->body,-y/cfg->BallRadius(),x/cfg->BallRadius(),0);
+	switch(move_state)
+	{
+            case MOVE_ROBOT:
+		if (moving_robot_id!=-1)
+		{
+			ssl->robots[moving_robot_id]->setXY(ssl->cursor_x,ssl->cursor_y);
+			move_state = NONE;
+			ssl->show3DCursor = false;
+		}
+		break;
+	    case MOVE_BALL:
+		ssl->ball->setBodyPosition(ssl->cursor_x,ssl->cursor_y,cfg->BallRadius()*1.1*20.0);
+		dBodySetAngularVel(ssl->ball->body,0,0,0);
+		dBodySetLinearVel(ssl->ball->body,0,0,0);
+		ssl->show3DCursor = false;
+            	move_state = NONE;
+	    default:
+		if (ssl->selected>=0){
+			clicked_robot = ssl->selected;
+			selectRobot();
+		}
+		if (kickingball)
+		{
+			dReal x,y,z;
+			ssl->ball->getBodyPosition(x,y,z);                
+			x = ssl->cursor_x - x;
+			y = ssl->cursor_y - y;
+			dReal lxy = hypot(x,y);
+			x /= lxy;
+			y /= lxy;
+			x *= kickpower;
+			y *= kickpower;
+			dBodySetLinearVel(ssl->ball->body,x,y,0);
+			dBodySetAngularVel(ssl->ball->body,-y/cfg->BallRadius(),x/cfg->BallRadius(),0);
+		}
+	 
 
-}
-          
-        }
+	}
     }
     if (event->buttons() & Qt::RightButton)
     {

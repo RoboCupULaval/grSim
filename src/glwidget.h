@@ -93,7 +93,8 @@ protected:
     void keyReleaseEvent(QKeyEvent* event);
     void closeEvent(QCloseEvent *event);    
 private:
-    int state;
+    enum state {NONE, MOVE_ROBOT, MOVE_BALL};
+    state move_state;
     int moving_robot_id,clicked_robot;
     int frames;
     bool first_time;
