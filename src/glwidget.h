@@ -60,6 +60,7 @@ public:
     void putBall(dReal x,dReal y);
     void reform(int team,const QString& act);    
     void step();
+    void setClickedRobot(int id);
 public slots:
     void moveRobot();
     void resetRobot();

@@ -122,6 +122,13 @@ void GLWidget::moveRobot()
     moving_robot_id = clicked_robot;
 }
 
+void GLWidget::setClickedRobot(int id)
+{
+	
+	clicked_robot = id;
+
+}
+
 void GLWidget::selectRobot()
 {
     if (clicked_robot!=-1)

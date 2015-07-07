@@ -309,6 +309,17 @@ void MainWindow::readPendingDatagrams()
 			} pos;
 		};
 
+		union binVec3 
+		{
+		    	char bin[12];
+			struct pos{
+				float x;
+				float y;
+				float z;
+			} pos;
+			float vec[3];
+		};
+
 		union binInt type;
 		memcpy(&type.bin, datagram.left(4), 4);
 
@@ -323,6 +334,24 @@ void MainWindow::readPendingDatagrams()
 			union binVec2 foo;
 			memcpy(&foo.bin, datagram.mid(8, 8), 8);
 			glwidget->ssl->robots[id.value]->setXY(foo.pos.x, foo.pos.y); 
+		}
+		else if (type.value == 2){
+			glwidget->lockCameraToBall();
+		}
+		else if (type.value == 3){
+			union binInt id;
+			memcpy(&id.bin, datagram.mid(4, 4), 4);
+
+			glwidget->setClickedRobot(id.value);
+			glwidget->selectRobot();
+			glwidget->lockCameraToRobot();
+		}
+		else if (type.value == 4){
+			union binVec3 xyz;
+			memcpy(&xyz.bin, datagram.mid(4, 12), 12);
+			union binVec3 hpr;
+			memcpy(&hpr.bin, datagram.mid(16, 12), 12);
+			glwidget->ssl->g->setViewpoint(xyz.pos.x,xyz.pos.y,xyz.pos.z,hpr.pos.x,hpr.pos.y,hpr.pos.z);
 		}
 
 
