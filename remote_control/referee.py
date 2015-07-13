@@ -1,6 +1,7 @@
 import grSimRemote
-import time
 import rule
+import atexit
+import time
 
 engine = rule.Rule()
 
@@ -20,8 +21,8 @@ def isInZone(position, zone):
             position[0] < zone[2] and position[1] < zone[3])
 
 def reset():
-    time.sleep(2)
     grSimRemote.move_to_kickoff()
+    time.sleep(0.1)
     engine.grab_vision_frames() # Flush vision frames
 
 game_zone = (-3000, -2000, 3000, 2000)
@@ -36,17 +37,16 @@ def update_ball():
                                 vision_frame.balls[0].position.z)
 
         if isInZone(ball_position, blue_goal):
-            print("Yellow Score!!!")
-            reset()
+            return "yellow"
         elif isInZone(ball_position, yellow_goal):
-            print("Blue Score!!!")
-            reset()
+            return "blue"
         elif not isInZone(ball_position, game_zone):
-            print("OUT!!!")
+            return "out"
+
+atexit.register(engine.stop)
+
+if __name__ == "__main__":
+    while True:  # TODO: Replace with a loop that will stop when the game is over
+        result = update_ball()
+        if result:
             reset()
-
-while True:  # TODO: Replace with a loop that will stop when the game is over
-    update_ball()
-
-engine.stop()
-
