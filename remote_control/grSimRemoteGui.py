@@ -31,7 +31,7 @@ class controls(tk.Frame):
                 self.scoreboard.score_yellow()
             self.parent.after(2000, self.reset_and_update)
         else:
-            self.parent.after(5, self.update)
+            self.parent.after(100, self.update)
 
     def reset_and_update(self):
         referee.reset()
