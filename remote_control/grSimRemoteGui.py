@@ -17,6 +17,7 @@ class controls(tk.Frame):
     def show_scoreboard(self):
         self.newWindow = tk.Toplevel(self.parent)
         self.newWindow.title('Scoreboard')
+        self.newWindow.geometry("800x200+25+25")
         self.scoreboard = scoreboard(self.newWindow)
 
     def update(self):
@@ -57,15 +58,18 @@ class scoreboard(tk.Frame):
         self.yellow_score = 0
 
     def initialize(self):
-        font = ("Helvetica", 32)
-        tk.Label(self, text="Yellow").grid(row=0,column=0, sticky=N+S+W+E)
-        tk.Label(self, text="Score").grid(row=0,column=1, sticky=N+E+S+W)
-        tk.Label(self, text="Blue").grid(row=0,column=2, sticky=N+E+W+S)
-        self.yellow_score_label = tk.Label(self, text="0", font=font)
+        score_font = ("Impact", 96)
+        message_font = ("Impact", 56)
+        tk.Label(self, text="Yellow").grid(row=0, column=0, sticky=N+S+W+E)
+        tk.Label(self, text="Score").grid(row=0, column=1, sticky=N+E+S+W)
+        tk.Label(self, text="Blue").grid(row=0, column=2, sticky=N+E+W+S)
+        self.yellow_score_label = tk.Label(self, text="0",
+                                           fg="yellow", font=score_font)
         self.yellow_score_label.grid(row=1, column=0, sticky=N+S+W+E)
-        self.message_label = tk.Label(self, font=font)
+        self.message_label = tk.Label(self, font=message_font)
         self.message_label.grid(row=1, column=1, sticky=N+S+E+W)
-        self.blue_score_label = tk.Label(self, text="0", font=font)
+        self.blue_score_label = tk.Label(self, text="0",
+                                         fg="blue", font=score_font)
         self.blue_score_label.grid(row=1, column=2, sticky=N+S+E+W)
 
         self.grid_columnconfigure(0, weight=1)
@@ -73,7 +77,7 @@ class scoreboard(tk.Frame):
         self.grid_columnconfigure(2, weight=1)
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=3)
-        self.pack(fill=tk.BOTH, expand =True)
+        self.pack(fill=tk.BOTH, expand=True)
 
     def out(self):
         self.show_message("Out!!!")

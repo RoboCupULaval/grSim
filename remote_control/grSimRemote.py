@@ -60,8 +60,8 @@ def move_to_kickoff():
     move_robot("yellow", 0, 2.5, 0)
     move_robot("blue", 0, -0.5, 0)
     move_ball(0, 0)
-    move_camera(-2, 0, 1, 0, 0, 0)
-    lock_camera_robot("blue", 0)
+    #move_camera(-2, 0, 1, 0, 0, 0)
+    #lock_camera_robot("blue", 0)
 
 if __name__ == '__main__':
     move_to_kickoff()
