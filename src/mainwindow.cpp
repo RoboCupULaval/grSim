@@ -334,6 +334,7 @@ void MainWindow::readPendingDatagrams()
 			union binVec2 foo;
 			memcpy(&foo.bin, datagram.mid(8, 8), 8);
 			glwidget->ssl->robots[id.value]->setXY(foo.pos.x, foo.pos.y); 
+			glwidget->ssl->robots[id.value]->resetRobot(); 
 		}
 		else if (type.value == 2){
 			glwidget->lockCameraToBall();
