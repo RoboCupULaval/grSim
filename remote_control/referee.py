@@ -2,6 +2,7 @@ import grSimRemote
 import rule
 import atexit
 import time
+import math
 
 engine = rule.Rule()
 
@@ -28,8 +29,17 @@ def reset():
 game_zone = (-3000, -2000, 3000, 2000)
 blue_goal = (-3160, -350, -3000, 350)
 yellow_goal = (3000, -350, 3160, 350)
+yellow_goalkeeper_square = (2500, -250, 3000, 250)
+blue_goalkeeper_square = (-3000, -250, -2500, 250)
 
+def getDistance(p1, p2):
+    x = p2[0] - p1[0]
+    y = p2[1] - p1[1]
+    return math.sqrt(x**2 + y**2)
+
+time_entered_in_zone = time.time()
 def update_ball():
+    global time_entered_in_zone
     vision_frames = engine.grab_vision_frames()
     if vision_frames:
         vision_frame = vision_frames[0]
@@ -42,6 +52,13 @@ def update_ball():
             return "blue"
         elif not isInZone(ball_position, game_zone):
             return "out"
+        elif isInZone(ball_position, yellow_goalkeeper_square) \
+             or getDistance(ball_position, (3000, 250)) < 425 \
+             or getDistance(ball_position, (3000, -250)) < 425:
+            if time.time() - time_entered_in_zone > 4:
+                return "out"
+        else:
+            time_entered_in_zone = time.time()
 
 atexit.register(engine.stop)
 
