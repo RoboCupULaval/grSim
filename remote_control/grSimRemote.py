@@ -2,6 +2,7 @@
 
 import socket
 import struct
+from random import randint
 
 UDP_IP = "127.0.0.1"
 UDP_PORT = 7755
@@ -61,7 +62,7 @@ def move_to_kickoff():
     move_robot("blue", 0, -0.5, 0)
     move_robot("blue", 1, -0.5, 1)
     move_robot("blue", 2, -0.5, -1)
-    move_ball(0, 0)
+    move_ball(randint(0, 2000) / 1000.0, randint(-1500, 1500) / 1000.0)
     #move_camera(-2, 0, 1, 0, 0, 0)
     #lock_camera_robot("blue", 0)
 
