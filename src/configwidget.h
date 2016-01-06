@@ -29,6 +29,7 @@ Copyright (C) 2011, Parsian Robotic Center (eew.aut.ac.ir/~parsian/grsim)
 
 #include <stdint.h>
 #include <stdio.h>
+#include <tr1/memory>
 
 #include <vartypes/VarTreeModel.h>
 #include <vartypes/VarItem.h>
@@ -43,6 +44,7 @@ Copyright (C) 2011, Parsian Robotic Center (eew.aut.ac.ir/~parsian/grsim)
 #include <vartypes/VarTypes.h>
 
 using namespace VarTypes;
+using std::tr1::shared_ptr;
 
 #define DEF_VALUE(type,Type,name)  \
             shared_ptr<VarTypes::Var##Type> v_##name; \
