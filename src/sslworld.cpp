@@ -136,6 +136,7 @@ SSLWorld::SSLWorld(QGLWidget* parent,ConfigWidget* _cfg,RobotsFomation *form1,Ro
 {    
     isGLEnabled = true;
     customDT = -1;    
+    totalDT = 0;    
     _w = this;
     cfg = _cfg;
     m_parent = parent;
@@ -463,6 +464,7 @@ void SSLWorld::step(dReal dt)
 
     sendVisionBuffer();
     framenum ++;
+    totalDT += dt; 
 }
 
 
@@ -593,7 +595,8 @@ SSL_WrapperPacket* SSLWorld::generatePacket()
     ball->getBodyPosition(x,y,z);    
     packet->mutable_detection()->set_camera_id(0);
     packet->mutable_detection()->set_frame_number(framenum);    
-    dReal t_elapsed = timer->elapsed()/1000.0;
+    //dReal t_elapsed = timer->elapsed()/1000.0;
+    dReal t_elapsed = totalDT;
     packet->mutable_detection()->set_t_capture(t_elapsed);
     packet->mutable_detection()->set_t_sent(t_elapsed);
     dReal dev_x = cfg->noiseDeviation_x();

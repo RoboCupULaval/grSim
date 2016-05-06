@@ -62,6 +62,7 @@ private:
     char *in_buffer;    
 public:    
     dReal customDT;
+    dReal totalDT;
     bool isGLEnabled;
     SSLWorld(QGLWidget* parent,ConfigWidget* _cfg,RobotsFomation *form1,RobotsFomation *form2);
     virtual ~SSLWorld();
